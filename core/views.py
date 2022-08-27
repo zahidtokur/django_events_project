@@ -35,15 +35,23 @@ class EventListView(ListView):
     model = Event
 
 
-class EventToggleJoinView(DetailView):
+class EventJoinView(DetailView):
+    model = Event
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if request.user not in self.object.guests.all():
+            self.object.guests.add(request.user)
+        return super().get(request, *args, **kwargs)
+
+
+class EventUnjoinView(DetailView):
     model = Event
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         if request.user in self.object.guests.all():
             self.object.guests.remove(request.user)
-        else:
-            self.object.guests.add(request.user)
         return super().get(request, *args, **kwargs)
 
 
