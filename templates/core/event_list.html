@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+  <title>Events</title>
+{% endblock title %}
+
+{% block content %}
+<div class="col-md-4 offset-md-4 container-fluid">
+    {% for event in object_list %}
+        <div class="card mt-3">
+        <div class="card-body">
+            <h5 class="card-title">{{ event.title }}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">creator: {{ event.created_by }}</h6>
+            <h6 class="card-subtitle mb-2 text-muted">date: {{ event.date }}</h6>
+            <p class="card-text">{{ event.description }}</p>
+            {% if event.created_by == user %}
+            <a href="{% url 'delete' pk=event.pk %}" class="card-link">delete</a>
+            <a href="{% url 'update' pk=event.pk %}" class="card-link">edit</a>
+            {% endif %}
+            {% if user not in event.guests.all %}
+            <a href="{% url 'join' pk=event.pk %}" class="card-link">join</a>
+            {% else %}
+            <a href="{% url 'unjoin' pk=event.pk %}" class="card-link">unjoin</a>
+            {% endif %}
+        </div>
+        </div>
+        {% endfor %}
+</div>
+    
+{% endblock content %}
