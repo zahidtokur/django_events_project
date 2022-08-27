@@ -73,7 +73,8 @@ TEMPLATES = [
 WSGI_APPLICATION = 'events_project.wsgi.application'
 
 AUTH_USER_MODEL = 'account.User'
-
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'home'
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
