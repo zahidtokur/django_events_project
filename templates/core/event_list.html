@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load paginator_tags %}
 
 {% block title %}
   <title>Events</title>
@@ -23,9 +24,45 @@
             {% else %}
             <a href="{% url 'unjoin' pk=event.pk %}" class="card-link">unjoin</a>
             {% endif %}
+            <span class="ms-3 card-text text-muted">{{ event.guests.all.count }} guests</span>
         </div>
-        </div>
-        {% endfor %}
+      </div>
+    {% endfor %}
+    
+      <nav>
+        <ul class="pagination justify-content-center mt-3">
+          {% if page_obj.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{page_obj.previous_page_number}}">Previous</a>
+            </li>
+          {% else %}
+            <li class="page-item disabled">
+              <a class="page-link">Previous</a>
+            </li>
+          {% endif %}
+          {% get_page_range paginator page_obj.number as page_range %}
+          {% for page in page_range %}
+            {% if page == paginator.ELLIPSIS %}
+              <li class="page-item disabled"><a class="page-link" href="#">{{ page }}</a></li>
+            {% elif page == page_obj.number %}
+              <li class="page-item disabled"><a class="page-link" href="#">{{ page }}</a></li>
+            {% else %}
+              <li class="page-item"><a class="page-link" href="?page={{ page }}">{{ page }}</a></li>
+            {% endif %}
+          {% endfor %}
+
+          {% if page_obj.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{page_obj.next_page_number}}">Next</a>
+            </li>
+          {% else %}
+            <li class="page-item disabled">
+              <a class="page-link">Next</a>
+            </li>
+          {% endif %}
+        </ul>
+    </nav>
+    
 </div>
     
 {% endblock content %}
