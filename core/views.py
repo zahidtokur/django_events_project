@@ -36,12 +36,13 @@ class EventDeleteView(UserOwnsEventMixin, DeleteView):
 
 class EventListView(ListView):
     model = Event
-    ordering = 'date'
     paginate_by = 3
 
     def get_queryset(self):
         today = timezone.now()
-        return super().get_queryset().filter(date__gte=today)
+        objects = self.model.objects.filter(
+            date__gte=today).order_by('date')
+        return objects.prefetch_related('guests')
 
 class EventJoinView(LoginRequiredMixin, RedirectView):
     
@@ -64,11 +65,14 @@ class EventUnjoinView(LoginRequiredMixin, RedirectView):
 class EventCreatedListView(EventListView):
 
     def get_queryset(self):
-        return super().get_queryset().filter(created_by=self.request.user)
+        objects = self.model.objects.filter(
+            created_by=self.request.user).order_by('date')
+        return objects.prefetch_related('guests')
 
 
 class EventJoinedListView(EventListView):
 
     def get_queryset(self):
-        return super().get_queryset().filter(guests__id=self.request.user.id)
-
+        objects = self.model.objects.filter(
+            guests__id=self.request.user.id).order_by('date')
+        return objects.prefetch_related('guests')
