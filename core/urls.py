@@ -10,4 +10,6 @@ urlpatterns = [
     path("event/<int:pk>/delete/", views.EventDeleteView.as_view(), name="delete"),
     path("event/<int:pk>/join/", views.EventJoinView.as_view(), name="join"),
     path("event/<int:pk>/unjoin/", views.EventUnjoinView.as_view(), name="unjoin"),
+    path("event/created/", views.EventCreatedListView.as_view(), name="created_list"),
+    path("event/joined/", views.EventJoinedListView.as_view(), name="joined_list"),
 ]

@@ -2,14 +2,17 @@ from django.utils import timezone
 from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
-from django.views.generic.detail import DetailView
+from django.shortcuts import get_object_or_404
+from django.views.generic.base import RedirectView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from .mixins import UserOwnsEventMixin
+from .forms import EventForm
 
 from .models import Event
 
 class EventCreateView(LoginRequiredMixin, CreateView):
     model = Event
-    fields = ['title', 'description', 'date']
+    form_class = EventForm
     template_name_suffix = '_create'
     success_url = reverse_lazy("home")
 
@@ -18,14 +21,14 @@ class EventCreateView(LoginRequiredMixin, CreateView):
        return super().form_valid(form)
 
 
-class EventUpdateView(LoginRequiredMixin, UpdateView):
+class EventUpdateView(UserOwnsEventMixin, UpdateView):
     model = Event
-    fields = ['title', 'description', 'date']
+    form_class = EventForm
     template_name_suffix = '_update'
     success_url = reverse_lazy("home")
 
 
-class EventDeleteView(LoginRequiredMixin, DeleteView):
+class EventDeleteView(UserOwnsEventMixin, DeleteView):
     model = Event
     template_name_suffix = '_delete'
     success_url = reverse_lazy("home")
@@ -33,31 +36,39 @@ class EventDeleteView(LoginRequiredMixin, DeleteView):
 
 class EventListView(ListView):
     model = Event
+    ordering = 'date'
+    paginate_by = 3
+
+    def get_queryset(self):
+        today = timezone.now()
+        return super().get_queryset().filter(date__gte=today)
+
+class EventJoinView(LoginRequiredMixin, RedirectView):
+    
+    def get_redirect_url(self, *args, **kwargs):
+        event = get_object_or_404(Event, pk=kwargs['pk'])
+        if self.request.user not in event.guests.all():
+            event.guests.add(self.request.user)
+        return reverse_lazy('joined_list')
 
 
-class EventJoinView(DetailView):
-    model = Event
+class EventUnjoinView(LoginRequiredMixin, RedirectView):
 
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        if request.user not in self.object.guests.all():
-            self.object.guests.add(request.user)
-        return super().get(request, *args, **kwargs)
-
-
-class EventUnjoinView(DetailView):
-    model = Event
-
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        if request.user in self.object.guests.all():
-            self.object.guests.remove(request.user)
-        return super().get(request, *args, **kwargs)
+    def get_redirect_url(self, *args, **kwargs):
+        event = get_object_or_404(Event, pk=kwargs['pk'])
+        if self.request.user in event.guests.all():
+            event.guests.remove(self.request.user)
+        return reverse_lazy('joined_list')
 
 
-class EventCreatedListView(ListView):
-    model = Event
+class EventCreatedListView(EventListView):
+
+    def get_queryset(self):
+        return super().get_queryset().filter(created_by=self.request.user)
 
 
-class EventJoinedListView(ListView):
-    model = Event
+class EventJoinedListView(EventListView):
+
+    def get_queryset(self):
+        return super().get_queryset().filter(guests__id=self.request.user.id)
+
