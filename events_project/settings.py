@@ -73,6 +73,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'events_project.wsgi.application'
 
 AUTH_USER_MODEL = 'account.User'
+LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
 

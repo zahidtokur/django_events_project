@@ -23,7 +23,7 @@ class EventListView(ListView):
         return objects.prefetch_related('guests')
 
 
-class EventCreatedListView(EventListView):
+class EventCreatedListView(LoginRequiredMixin, EventListView):
 
     def get_queryset(self):
         objects = self.model.objects.filter(
@@ -31,7 +31,7 @@ class EventCreatedListView(EventListView):
         return objects.prefetch_related('guests')
 
 
-class EventJoinedListView(EventListView):
+class EventJoinedListView(LoginRequiredMixin, EventListView):
 
     def get_queryset(self):
         objects = self.model.objects.filter(
