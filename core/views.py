@@ -1,14 +1,43 @@
 from django.utils import timezone
 from django.urls import reverse_lazy
+from django.shortcuts import get_object_or_404
+
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
-from django.shortcuts import get_object_or_404
 from django.views.generic.base import RedirectView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .mixins import UserOwnsEventMixin
-from .forms import EventForm
 
 from .models import Event
+from .forms import EventForm
+from .mixins import UserOwnsEventMixin
+
+
+class EventListView(ListView):
+    model = Event
+    paginate_by = 5
+
+    def get_queryset(self):
+        today = timezone.now()
+        objects = self.model.objects.filter(
+            date__gte=today).order_by('date')
+        return objects.prefetch_related('guests')
+
+
+class EventCreatedListView(EventListView):
+
+    def get_queryset(self):
+        objects = self.model.objects.filter(
+            created_by=self.request.user).order_by('date')
+        return objects.prefetch_related('guests')
+
+
+class EventJoinedListView(EventListView):
+
+    def get_queryset(self):
+        objects = self.model.objects.filter(
+            guests__id=self.request.user.id).order_by('date')
+        return objects.prefetch_related('guests')
+
 
 class EventCreateView(LoginRequiredMixin, CreateView):
     model = Event
@@ -34,16 +63,6 @@ class EventDeleteView(UserOwnsEventMixin, DeleteView):
     success_url = reverse_lazy("home")
 
 
-class EventListView(ListView):
-    model = Event
-    paginate_by = 3
-
-    def get_queryset(self):
-        today = timezone.now()
-        objects = self.model.objects.filter(
-            date__gte=today).order_by('date')
-        return objects.prefetch_related('guests')
-
 class EventJoinView(LoginRequiredMixin, RedirectView):
     
     def get_redirect_url(self, *args, **kwargs):
@@ -60,19 +79,3 @@ class EventUnjoinView(LoginRequiredMixin, RedirectView):
         if self.request.user in event.guests.all():
             event.guests.remove(self.request.user)
         return reverse_lazy('joined_list')
-
-
-class EventCreatedListView(EventListView):
-
-    def get_queryset(self):
-        objects = self.model.objects.filter(
-            created_by=self.request.user).order_by('date')
-        return objects.prefetch_related('guests')
-
-
-class EventJoinedListView(EventListView):
-
-    def get_queryset(self):
-        objects = self.model.objects.filter(
-            guests__id=self.request.user.id).order_by('date')
-        return objects.prefetch_related('guests')
