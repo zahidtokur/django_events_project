@@ -12,6 +12,7 @@
             <form method="post">{% csrf_token %}
             {{ form }}
             <input type="submit" class="btn btn-danger" value="Confirm">
+            <a class="btn btn-success" href="{% url 'created_list' %}">No, take me back!</a>
         </div>
         </div>
 </form>
