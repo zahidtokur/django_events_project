@@ -1,0 +1,112 @@
+[
+  {
+    "model": "core.event",
+    "pk": 1,
+    "fields": {
+      "created_by": 1,
+      "title": "Example Event Title 1",
+      "description": "Example event description",
+      "date": "2022-12-12",
+      "guests": [1, 2, 3, 4, 5]
+    }
+  },
+  {
+    "model": "core.event",
+    "pk": 1,
+    "fields": {
+      "created_by": 1,
+      "title": "Example Event Title 2",
+      "description": "Example event description",
+      "date": "2022-11-13",
+      "guests": []
+    }
+  },
+  {
+    "model": "core.event",
+    "pk": 1,
+    "fields": {
+      "created_by": 1,
+      "title": "Example Event Title 3",
+      "description": "Example event description",
+      "date": "2022-12-20",
+      "guests": [5]
+    }
+  },
+  {
+    "model": "core.event",
+    "pk": 1,
+    "fields": {
+      "created_by": 1,
+      "title": "Example Event Title 4",
+      "description": "Example event description",
+      "date": "2022-12-23",
+      "guests": [3, 4, 5, 6]
+    }
+  },
+  {
+    "model": "core.event",
+    "pk": 1,
+    "fields": {
+      "created_by": 1,
+      "title": "Example Event Title 5",
+      "description": "Example event description",
+      "date": "2022-10-09",
+      "guests": [3, 8, 9, 10]
+    }
+  },
+  {
+    "model": "core.event",
+    "pk": 1,
+    "fields": {
+      "created_by": 2,
+      "title": "An event by user2",
+      "description": "Example event description",
+      "date": "2023-01-01",
+      "guests": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    }
+  },
+  {
+    "model": "core.event",
+    "pk": 1,
+    "fields": {
+      "created_by": 3,
+      "title": "An event by user3",
+      "description": "Example event description",
+      "date": "2022-12-05",
+      "guests": [2, 3, 4, 5, 6, 7, 8, 9]
+    }
+  },
+  {
+    "model": "core.event",
+    "pk": 1,
+    "fields": {
+      "created_by": 4,
+      "title": "An event by user4",
+      "description": "Example event description",
+      "date": "2022-11-27",
+      "guests": [1, 3, 5, 8, 9]
+    }
+  },
+  {
+    "model": "core.event",
+    "pk": 1,
+    "fields": {
+      "created_by": 5,
+      "title": "An event by user5",
+      "description": "Example event description",
+      "date": "2022-09-25",
+      "guests": [2, 3, 6, 7]
+    }
+  },
+  {
+    "model": "core.event",
+    "pk": 1,
+    "fields": {
+      "created_by": 6,
+      "title": "An event by user6",
+      "description": "Example event description",
+      "date": "2022-09-30",
+      "guests": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    }
+  }
+]
