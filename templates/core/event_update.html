@@ -3,12 +3,12 @@
 {% load crispy_forms_tags %}
 
 {% block title %}
-  <title>Create Event</title>
+  <title>Update {{object}}</title>
 {% endblock title %}
 
 {% block content %}
 <div class="col-md-2 offset-md-5 mt-5">
-    <h2>Create Event</h2>
+    <h2>Update {{object}}</h2>
     <form method="post">
         {% csrf_token %} 
         {{ form|crispy }}

@@ -8,7 +8,8 @@
 
 {% block content %}
 <div class="col-md-4 offset-md-4 container-fluid">
-    {% for event in object_list %}
+    {% if object_list %}
+      {% for event in object_list %}
         <div class="card mt-3">
         <div class="card-body">
             <h5 class="card-title">{{ event.title }}</h5>
@@ -66,6 +67,12 @@
           {% endif %}
         </ul>
     </nav>
+    {% else %}
+      <div class="card text-center mt-5">
+        <div class="card-body">
+          <h5 class="card-title">Don't have any events to show yet!</h5>
+      </div>
+    {% endif %}
     
 </div>
     
