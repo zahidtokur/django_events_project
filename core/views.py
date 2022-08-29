@@ -26,14 +26,18 @@ class EventListView(ListView):
 class EventCreatedListView(LoginRequiredMixin, EventListView):
 
     def get_queryset(self):
-        objects = self.request.user.created_events.order_by('date')
+        today = timezone.now()
+        objects = self.request.user.created_events.filter(
+            date__gte=today).order_by('date')
         return objects.prefetch_related('guests')
 
 
 class EventJoinedListView(LoginRequiredMixin, EventListView):
 
     def get_queryset(self):
-        objects = self.request.user.joined_events.order_by('date')
+        today = timezone.now()
+        objects = self.request.user.joined_events.filter(
+            date__gte=today).order_by('date')
         return objects.prefetch_related('guests')
 
 
