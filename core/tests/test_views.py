@@ -136,8 +136,55 @@ class EventViewsTestCase(TestCase):
         self.assertTrue(Event.objects.filter(
             created_by=self.user, title=event_title).exists())
 
-    # def test_delete_event_view(self):
+    def test_delete_event_view_GET(self):
+        response = self.client.get(
+            reverse('delete', kwargs={"pk": self.event.pk}))
+        # login required view, since there is no authenticated user, redirects to login page
+        self.assertEqual(response.status_code, 302)
+        self.assertTemplateNotUsed(response, 'core/event_delete.html')
 
-    # def test_join_event_view(self):
+        self.login_user(self.user_email, self.user_password)
+        # logged in user can access the view
+        response = self.client.get(
+            reverse('delete', kwargs={"pk": self.event.pk}))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'core/event_delete.html')
 
-    # def test_unjoin_event_view(self):
+        # create and login a new user that isn't the creator of the event
+        new_user_email = "test2@email.com"
+        new_user_password = "testpassword"
+        new_user = self.create_user(new_user_email, new_user_password)
+        self.login_user(new_user_email, new_user_password)
+
+        # creator of the event is not the new user and can't access the view
+        response = self.client.get(
+            reverse('delete', kwargs={"pk": self.event.pk}))
+        self.assertEqual(response.status_code, 403)
+        self.assertTemplateNotUsed(response, 'core/event_delete.html')
+
+    def test_delete_event_view_POST(self):
+        self.login_user(self.user_email, self.user_password)
+        # logged in user can access the view
+        self.assertTrue(Event.objects.exists())
+        response = self.client.post(
+            reverse('delete', kwargs={"pk": self.event.pk}))
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(Event.objects.exists())
+
+    def test_join_event_view_GET(self):
+        self.login_user(self.user_email, self.user_password)
+        self.assertFalse(self.event.guests.exists())
+        response = self.client.get(
+            reverse('join', kwargs={"pk": self.event.pk}))
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(self.event.guests.exists())
+        self.assertTrue(self.event.guests.filter(id=self.user.id))
+
+    def test_unjoin_event_view_GET(self):
+        self.login_user(self.user_email, self.user_password)
+        self.event.guests.add(self.user)
+        self.assertTrue(self.event.guests.exists())
+        response = self.client.get(
+            reverse('unjoin', kwargs={"pk": self.event.pk}))
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(self.event.guests.exists())
