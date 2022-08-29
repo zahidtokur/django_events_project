@@ -26,16 +26,14 @@ class EventListView(ListView):
 class EventCreatedListView(LoginRequiredMixin, EventListView):
 
     def get_queryset(self):
-        objects = self.model.objects.filter(
-            created_by=self.request.user).order_by('date')
+        objects = self.request.user.created_events.order_by('date')
         return objects.prefetch_related('guests')
 
 
 class EventJoinedListView(LoginRequiredMixin, EventListView):
 
     def get_queryset(self):
-        objects = self.model.objects.filter(
-            guests__id=self.request.user.id).order_by('date')
+        objects = self.request.user.joined_events.order_by('date')
         return objects.prefetch_related('guests')
 
 
