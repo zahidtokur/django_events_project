@@ -25,13 +25,13 @@ python3 -m venv <env-name>
 Activate virtual enviroment:
 
 ```
-source venv/bin/activate
+source <env-name>/bin/activate
 ```
 
 or
 
 ```
-venv/Scripts/activate
+<env-name>/Scripts/activate
 ```
 
 Install requirements:
