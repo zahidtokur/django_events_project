@@ -19,7 +19,19 @@ Having Python3 installed.
 After cloning the repository, create a virtual environment:
 
 ```
-python -m venv <env-name>
+python3 -m venv <env-name>
+```
+
+Activate virtual enviroment:
+
+```
+source venv/bin/activate
+```
+
+or
+
+```
+venv/Scripts/activate
 ```
 
 Install requirements:
